@@ -1,0 +1,252 @@
+---
+title: "algeria_sig"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# load library
+
+```{r load library, message=FALSE, warning=FALSE}
+source("connection_db.R")
+```
+
+```{r}
+str(data)
+```
+
+
+```{r}
+source("sig.R")
+```
+
+
+# create w_algerie
+
+```{r fig.height=25, fig.width=25}
+plot(w_algeria["NAME_1"], axes = TRUE)
+title("the ten counties with smallest area")
+```
+
+```{r fig.height=20, fig.width=20}
+#if (require(dplyr, quietly = TRUE)) {}
+
+ st_geometry(w_algeria) %>% 
+    plot()
+ w_algeria %>% 
+   select(NAME_1) %>% 
+   arrange(NAME_1) %>% 
+   slice(1:15) %>% 
+   plot(add = TRUE, col = 'lightgreen')
+   title("the ten counties with smallest area")
+
+```
+
+
+
+
+
+```{r fig.height=25, fig.width=25, message=FALSE, warning=FALSE}
+mtq_c <- st_centroid(w_algeria)
+plot(st_geometry(w_algeria))
+plot(st_geometry(mtq_c), add=TRUE, cex=2, col="red", pch=20)
+```
+
+
+
+# crs
+
+```{r}
+#st_crs(w_algeria)
+```
+
+# plot 
+
+```{r fig.height=25, fig.width=25}
+ggplot()+
+  geom_sf(data = w_algeria,fill="lightgreen",color="black",size=0.25)+
+  theme_void()+
+  coord_sf(crs = "+proj=robin")
+```
+```{r}
+#wilaya_x("Djelfa")
+```
+
+```{r}
+#st_crs(w_algeria)
+```
+
+
+```{r fig.height=25, fig.width=25}
+djelfa <- wc_algeria %>% 
+  filter(NAME_1=="Djelfa")#Djelfa Médéa
+
+ggplot()+
+  geom_sf(data = djelfa,fill="lightgreen",color="black",size=0.25)+  ##,aes(fill=CC_2)
+  theme_void()+
+  coord_sf(crs = "+proj=robin")
+```
+
+
+
+```{r fig.height=25, fig.width=25, message=FALSE, warning=FALSE}
+ggplot(djelfa)+
+  geom_sf(color = "black", fill = "lightgreen")+
+  xlab("Longitude") + ylab("Latitude") +
+  ggtitle("Djelfa map")+
+  theme_void()+
+  coord_sf(crs = "+proj=robin")
+#ggsave("djelfa.pdf")
+```
+
+
+
+
+
+```{r}
+#plot(st_geometry(djelfa))
+```
+
+```{r message=FALSE, warning=FALSE, paged.print=TRUE}
+pop <- read.csv(file = "djelfa.csv")
+#head(pop)
+```
+
+
+```{r}
+pop_djelfa <- merge(x = djelfa, y = pop, by.x = "CC_2", by.y = "ID")
+#head(mtq)
+```
+
+
+```{r fig.height=25, fig.width=25}
+plot(pop_djelfa["pop"])
+```
+
+```{r fig.height=25, fig.width=25, message=FALSE, warning=FALSE}
+y <- pop_djelfa[,c("pop","NAME_2")]
+plot(y["pop"])
+#head(y)
+```
+
+
+
+```{r fig.height=25, fig.width=25}
+plot(w_algeria["NAME_1"])
+```
+
+```{r}
+w_algeria
+```
+
+
+
+```{r}
+data %>%
+  select(DINS,WILAYAR) %>% 
+  filter(DINS >= dt1 & DINS >= dt2 )  %>% 
+  group_by(WILAYAR) %>%   
+  summarise(number_wil = n()) %>% 
+  arrange(desc(number_wil)) %>% 
+  mutate(CC_1=recode(WILAYAR,
+                    "1000" = "1",
+                    "2000" = "2",
+                    "3000" = "3",
+                    "4000" = "4",
+                    "5000" = "5",
+                    "6000" = "6",
+                    "7000" = "7",
+                    "8000" = "8",
+                    "9000" = "9",
+                    "10000" = "10",
+                    "11000" = "11",
+                    "12000" = "12",
+                    "13000" = "13",
+                    "14000" = "14",
+                    "15000" = "15",
+                    "16000" = "16",
+                    "17000" = "17",
+                    "18000" = "18",
+                    "19000" = "19",
+                    "20000" = "20",
+                    "21000" = "21",
+                    "22000" = "22",
+                    "23000" = "23",
+                    "24000" = "24",
+                    "25000" = "25",
+                    "26000" = "26",
+                    "27000" = "27",
+                    "28000" = "28",
+                    "29000" = "29",
+                    "30000" = "30",
+                    "31000" = "31",
+                    "32000" = "32",
+                    "33000" = "33",
+                    "34000" = "34",
+                    "35000" = "35",
+                    "36000" = "36",
+                    "37000" = "37",
+                    "38000" = "38",
+                    "39000" = "39",
+                    "40000" = "40",
+                    "41000" = "41",
+                    "42000" = "42",
+                    "43000" = "43",
+                    "44000" = "44",
+                    "45000" = "45",
+                    "46000" = "46",
+                    "47000" = "47",
+                    "48000" = "48"
+                    ))-> df    
+```
+
+
+```{r}
+str(df) 
+```
+
+
+```{r}
+#head(df)
+```
+
+
+```{r}
+#deces_djelfa <- merge(x = w_algeria, y = dff, by.x = "CC_1", by.y = "CC_1")
+
+deces_djelfa <-left_join(w_algeria, df, by='CC_1')
+```
+
+
+```{r}
+#deces_djelfa
+```
+
+
+```{r fig.height=25, fig.width=25}
+plot(deces_djelfa["number_wil"])
+```
+
+
+```{r fig.height=25, fig.width=25}
+ggplot()+
+  geom_sf(data = deces_djelfa,size=0.25,aes(fill=number_wil))+  ##
+  theme_void()+
+  coord_sf(crs = "+proj=robin")
+```
+
+
+
+
+
+
+
+
+
+
+
+

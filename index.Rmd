@@ -1,0 +1,94 @@
+---
+title: "Mortalité  Hospitaliere"
+output:
+  pdf_document: default
+  html_document:
+    number_sections: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, warning=FALSE}
+source("connection_db.R")
+```
+
+```{r data}
+str(data)
+```
+# lieux du deces 
+
+## lieux 
+
+```{r lieux}
+lieux <- table(data$LD)#,useNA = "always" 
+sort(lieux)
+summary(lieux)
+```
+## graphic
+
+```{r graphic_lieux}
+barplot(sort(lieux))
+```
+
+# structure sanitaire
+
+## structure
+
+```{r structure}
+structure <- table(data$STRUCTURED)#,useNA = "always"
+sort(structure)
+summary(structure)
+```
+## graphic
+
+```{r graphic_structure}
+barplot(sort(structure))
+```
+
+# service du deces
+
+## service
+
+```{r service}
+service <- table(data$SERVICEHOSPIT)#,useNA = "always"
+sort(service)
+summary(service)
+```
+## graphic
+
+```{r graphic_service}
+barplot(sort(service))
+```
+
+# sexe 
+
+## sexe
+```{r sexe}
+sexe <- table(data$SEX)#,useNA = "always"
+sort(sexe)
+summary(sexe)
+```
+
+## graphic
+
+```{r graphic_sexe }
+barplot(sort(sexe))
+```
+
+# Profession
+
+## profession
+
+```{r profession}
+Profession <- table(data$Profession)#,useNA = "always"
+sort(Profession)
+summary(Profession)
+```
+## graphic
+
+```{r graphic_profession}
+barplot(sort(Profession))
+```
+

@@ -1,0 +1,37 @@
+---
+title: "data"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, warning=FALSE}
+source("connection_db.R")
+```
+
+
+```{r message=FALSE, warning=FALSE}
+str(data)
+```
+
+```{r}
+data %>%
+  select(DINS) %>% 
+  filter(DINS >= dt1 & DINS >= dt2 )  %>% 
+  group_by(DINS) %>%   
+  summarise(number_year = n()) %>% 
+  arrange(desc(number_year)) %>% 
+  ggplot(aes(x = DINS, y = number_year, fill = DINS)) +
+    #geom_line() +
+    geom_bar(stat = "identity") +
+    theme_classic() +
+    labs(
+        x = "Temps en jours ",
+        y = "Nombre de décès",
+        title = paste("Nombre de décès par jours (wilaya de Djelfa) : ",dt1,dt2)
+        )
+
+```
+
