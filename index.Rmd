@@ -1,94 +1,445 @@
 ---
 title: "Mortalité  Hospitaliere"
 output:
-  pdf_document: default
   html_document:
     number_sections: yes
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r message=FALSE, warning=FALSE}
+# load dada deces 
+
+Dans cette partie nous allons travailler sur des données, et utiliser un jeu de données issue de la base de données mysql.
+
+Le jeu de données que nous allons utiliser est un extrait de l’enquête sur la mortalité hospitaliere  réalisée par la DSP de djelfa  en 2021. Il contient 13946 deces et 14 variables. 
+
+Un data frame (ou tableau de données, ou table) est un type d’objet R qui contient des données au format tabulaire, avec les observations en ligne et les variables en colonnes, comme dans une feuille de tableur de type Excel.
+
+Si on se contente d’exécuter le nom de notre tableau de données R va, comme à son habitude, nous l’afficher dans la console, ce qui est tout sauf utile.
+
+Une autre manière d’afficher le contenu du tableau est de cliquer sur l’icône en forme de tableau à droite du nom de l’objet dans l’onglet Environment :
+
+Ou d’utiliser la fonction View :
+
+Il est important de comprendre que l’objet data contient l’intégralité des données du tableau. On voit donc qu’un objet peut contenir des données de types très différents (simple nombre, texte, vecteur, tableau de données entier), et être potentiellement de très grande taille
+
+Un data frame peut être manipulé comme les autres objets vus précédemment. On peut par exemple faire :
+
+ce qui va entraîner la copie de l’ensemble de nos données dans un nouvel objet nommé data. Ceci peut paraître parfaitement inutile mais a en fait l’avantage de fournir un objet avec un nom beaucoup plus court, ce qui diminuera la quantité de texte à saisir par la suite.
+
+Pour résumer, comme nous avons désormais décidé de saisir nos commandes dans un script et non plus directement dans la console, les premières lignes de notre fichier de travail sur les données de l’enquête sur la mortalité hospitaliere pourraient donc ressembler à ceci :
+
+
+```{r load dada deces,message=FALSE, warning=FALSE}
 source("connection_db.R")
 ```
 
-```{r data}
+## inspect data deces 
+
+Un tableau étant un objet comme un autre, on peut lui appliquer des fonctions. Par exemple, nrow et ncol retournent le nombre de lignes et de colonnes du tableau.
+
+La fonction dim renvoie ses dimensions, donc les deux nombres précédents.
+
+La fonction names retourne les noms des colonnes du tableau, c’est-à-dire la liste de nos variables.
+
+Enfin, la fonction str renvoie un descriptif plus détaillé de la structure du tableau. Elle liste les différentes variables, indique leur type 7 et affiche les premières valeurs.
+
+À noter que sous RStudio, on peut afficher à tout moment la structure d’un objet en cliquant sur l’icône de triangle sur fond bleu à gauche du nom de l’objet dans l’onglet Environment.
+
+```{r}
+nrow(data)
+ncol(data)
+dim(data)
+names(data)
+```
+
+## view data structure deces
+
+```{r view dadat deces }
 str(data)
 ```
-# lieux du deces 
 
-## lieux 
+## modalité des variable deces
+
+```{r}
+unique(data$LD)
+unique(data$SEX)
+unique(data$Profession)
+unique(data$CD)
+```
+
+## Accéder aux valeurs des variables d’un tableau
+
+Une opération très importante est l’accès aux variables du tableau (à ses colonnes) pour pouvoir les manipuler, effectuer des calculs, etc. On utilise pour cela l’opérateur $, qui permet d’accéder aux colonnes du tableau. Ainsi, si l’on tape :
+
+
+R va afficher l’ensemble des valeurs de la variable sexe dans la console, ce qui est à nouveau fort peu utile. Mais cela nous permet de constater que d$sexe est un vecteur de chaînes de caractères tels qu’on en a déjà rencontré précédemment.
+
+La fonction table$colonne renvoie donc la colonne nommée colonne du tableau table, c’est-à-dire un vecteur, en général de nombres ou de chaînes de caractères.
+
+
+
+```{r}
+## data$DINS
+```
+
+
+## summary data deces
+
+```{r}
+summary(data)
+```
+
+## view data deces
+
+Si on souhaite afficher seulement les premières ou dernières valeurs d’une variable, on peut utiliser les fonctions head et tail.
+
+Le deuxième argument numérique permet d’indiquer le nombre de valeurs à afficher.
+
+```{r}
+head(data,6)
+```
+
+## 
+
+```{r}
+tail(data,6)
+```
+
+
+
+
+# Analyse univariée
+
+On a donc désormais accès à un tableau de données data, dont :
+
+- les lignes sont des observations (des individus enquêtés) 
+
+- les colonnes des variables (des caractéristiques de chacun de ces individus), et on sait accéder à ces variables grâce à l’opérateur $.
+
+Si on souhaite analyser ces variables, les méthodes et fonctions utilisées seront différentes selon qu’il s’agit 
+
+- d’une variable quantitative (variable numérique pouvant prendre un grand nombre de valeurs) 
+
+- d’une variable qualitative  (variable pouvant prendre un nombre limité de valeurs appelées modalités).
+
+
+## lieux du deces 
+
+### lieux:table
 
 ```{r lieux}
 lieux <- table(data$LD)#,useNA = "always" 
 sort(lieux)
 summary(lieux)
 ```
-## graphic
+### lieux:graphic:r-base 
 
 ```{r graphic_lieux}
 barplot(sort(lieux))
 ```
 
-# structure sanitaire
+### lieux:grafic:r-ggplot2
 
-## structure
+```{r}
+ggplot(data = data, mapping = aes(x = LD)) + 
+  geom_bar()+
+  labs(title = "Répartition des décès par lieux",
+       x = "Lieux", 
+       y = "Total deces")
+```
+
+## structure sanitaire
+
+### structure:table
 
 ```{r structure}
 structure <- table(data$STRUCTURED)#,useNA = "always"
 sort(structure)
 summary(structure)
 ```
-## graphic
+### structure:graphic r-base
 
 ```{r graphic_structure}
 barplot(sort(structure))
 ```
 
-# service du deces
 
-## service
+### structure:graphic:r-ggplot2
+
+```{r}
+ggplot(data = data, mapping = aes(x = STRUCTURED)) +
+  geom_bar()+
+  labs(title = "Répartition des décès par étabblissements",
+       x = "Etablissement", 
+       y = "Total deces")
+```
+
+## service du deces
+
+### service:table
 
 ```{r service}
 service <- table(data$SERVICEHOSPIT)#,useNA = "always"
 sort(service)
 summary(service)
 ```
-## graphic
+### service:graphic:r-base
 
 ```{r graphic_service}
 barplot(sort(service))
 ```
+### service:graphic:r-ggplot2
 
-# sexe 
+```{r}
+ggplot(data = data, mapping = aes(x = SERVICEHOSPIT)) +
+  geom_bar()+
+  labs(title = "Répartition des décès par services",
+       x = "Service", 
+       y = "Total deces")
+```
 
-## sexe
+## age 
+
+### age:table
+
+```{r age table}
+age <- table(data$Years)#,useNA = "always"
+sort(age)
+summary(age)
+```
+
+
+### age:grafic:r-base
+
+```{r count}
+hist(data$Years, 
+     main = "Histogramme de l'age",
+     xlab = "age",
+     ylab= "nbr de deces",
+     breaks = 15,
+     col = "cyan")
+```
+
+### age:grafic:r-base
+
+```{r proportion}
+hist(data$Years, 
+     main = "Histogramme de l'age", 
+     xlab = "age", 
+     ylab= "%", 
+     breaks = 15,
+     col = "cyan", 
+     probability = TRUE)
+```
+
+### age:grafic:r-base
+
+```{r}
+boxplot(data$Years)
+```
+
+### age:grafic:t-ggplot2
+
+```{r message=FALSE, warning=FALSE}
+ggplot(data = data, mapping = aes(x = Years)) + #, fill = data$SEX
+  geom_histogram(binwidth = 5, color = "white")+
+  labs(title = "Répartition des décès par tranches d'ages",
+       x = "Age", 
+       y = "Total deces")
+```
+### age:grafic:t-ggplot2
+
+```{r}
+ggplot(data = data, mapping = aes(x = Years)) + #, fill = data$SEX
+  geom_density()+
+  labs(title = "Répartition des décès par Age du deces",
+       x = "Age", 
+       y = "Total deces")
+
+```
+
+
+
+
+### age:grafic:t-ggplot2
+
+```{r}
+ggplot(data = data, mapping = aes(y = Years)) + #, fill = data$SEX
+  geom_boxplot()+
+  labs(title = "Répartition des décès par Age du deces",
+       x = "Total deces", 
+       y = "Age")
+```
+## sexe 
+
+### sexe:table
+
 ```{r sexe}
 sexe <- table(data$SEX)#,useNA = "always"
 sort(sexe)
 summary(sexe)
 ```
 
-## graphic
+### sexe:graphic r-base
 
 ```{r graphic_sexe }
 barplot(sort(sexe))
 ```
+### sexe:graphic r-ggplot2
 
-# Profession
+```{r}
+ggplot(data = data, mapping = aes(x = SEX)) +
+  geom_bar()+
+  labs(title = "Répartition des décès par sexe",
+       x = "sexe", 
+       y = "Total deces")
+  
+```
 
-## profession
+## Profession
+
+### profession:table
 
 ```{r profession}
 Profession <- table(data$Profession)#,useNA = "always"
 sort(Profession)
 summary(Profession)
 ```
-## graphic
+### profession:graphic r-base
 
 ```{r graphic_profession}
 barplot(sort(Profession))
 ```
+### profession:graphic r-ggplot2
+
+
+```{r}
+ggplot(data = data, mapping = aes(x = Profession)) +
+  geom_bar()+
+  labs(title = "Répartition des décès par profession",
+       x = "Profession", 
+       y = "Total deces")
+```
+
+# Analyse bivariée
+
+Faire une analyse bivariée, c’est étudier la relation entre deux variables : sont-elles liées ? les valeurs de l’une influencent-elles les valeurs de l’autre ? ou sont-elles au contraire indépendantes ?
+
+À noter qu’on va parler ici d’influence ou de lien, mais pas de relation de cause à effet. Les outils présentés permettent de visualiser ou de déterminer une relation, mais la mise en évidence de liens de causalité proprement dit est nettement plus complexe : il faut en effet vérifier que c’est bien telle variable qui influence telle autre et pas l’inverse, qu’il n’y a pas de “variable cachée”, etc.
+
+Là encore, le type d’analyse ou de visualisation est déterminé par la nature qualitative ou quantitative des deux variables.
+
+
+## Croisement de deux variables qualitatives
+
+Quand on veut croiser deux variables qualitatives, on fait un tableau croisé. Comme pour un tri à plat ceci s’obtient avec la fonction table de R, mais à laquelle on passe cette fois deux variables en argument.
+
+### lieux du deces et le sexe
+
+```{r}
+table(data$LD, data$SEX)
+```
+
+```{r}
+ggplot(data = data) +
+  geom_bar(aes(x = LD, fill = SEX))+
+  labs(title = "Répartition des décès par lieux et sexe",
+       x = "structures sanitaires", 
+       y = "age en année")
+```
+
+### causes du deces et le sexe
+
+```{r}
+table(data$CD, data$SEX)
+```
+
+```{r}
+ggplot(data = data) +
+  geom_bar(aes(x = CD, fill = SEX))+
+  labs(title = "Répartition des décès par cause du deces et sexe",
+       x = "structures sanitaires", 
+       y = "age en année")
+```
+
+
+
+
+### la profession du deces et le sexe
+
+```{r}
+table(data$Profession, data$SEX)
+```
+```{r}
+ggplot(data = data) +
+  geom_bar(aes(x = Profession, fill = SEX))+
+  labs(title = "Répartition des décès par cause du deces et sexe",
+       x = "structures sanitaires", 
+       y = "age en année")
+```
+
+
+
+
+
+### la structure sanitaire du deces et le sexe
+
+```{r}
+table(data$STRUCTURED, data$SEX)
+```
+
+```{r}
+ggplot(data = data) +
+  geom_bar(aes(x = STRUCTURED, fill = SEX))+
+  labs(title = "Répartition des décès par cause du deces et sexe",
+       x = "structures sanitaires", 
+       y = "age en année")
+```
+### le service du deces et le sexe
+
+```{r}
+table(data$SERVICEHOSPIT, data$SEX)
+```
+
+```{r}
+ggplot(data = data) +
+  geom_bar(aes(x = SERVICEHOSPIT, fill = SEX))+
+  labs(title = "Répartition des décès par cause du deces et sexe",
+       x = "structures sanitaires", 
+       y = "age en année") #+theme_bw()
+```
+
+## Croisement d’une variable quantitative et d’une variable qualitative
+
+
+### age et sexe 
+
+
+```{r}
+boxplot(data$Years ~ data$SEX)
+```
+
+```{r}
+ggplot(data = data, 
+       mapping = aes(x =STRUCTURED,y = Years)) +
+  geom_boxplot(fill = "wheat", color = "tomato4")+
+  labs(title = "Répartition des décès par age et structure sanitaire",
+       x = "structures sanitaires", 
+       y = "age en année")
+```
+
+
+
+
+
+## Croisement de deux variables quantitatives
+
+
+
+
+
 

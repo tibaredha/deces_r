@@ -1,17 +1,19 @@
+# load data from mysql
 library("RMySQL")
 mysql= dbConnect(MySQL(),user="tibaredha",password="030570",dbname="framework",host="localhost")
 options(max.print=1000000)
-sql="select DINS,WILAYAR,COMMUNER,LD,STRUCTURED,SERVICEHOSPIT,SEX,Years,Profession,CD from deceshosp where Years <=100  and Years >=0 "
+sql="select DINS,WILAYAR,COMMUNER,LD,STRUCTURED,SERVICEHOSPIT,DUREEHOSPIT,SEX,Years,Days,Profession,CD,CODECIM0,CODECIM from deceshosp where Years <=100  and Years >=0 "
 resultat = dbSendQuery(mysql,sql)
 data=fetch(resultat,n=1000000)
+
 # tydyverse
 library(tidyverse)
 
-#varaibles
+# varaibles
 dt1 <- "2020-01-01"
 dt2 <- "2020-12-31"
 
-#preprocessing
+# preprocessing
 data$DINS  <- as.Date(data$DINS)
 
 data$LD <- as.factor(data$LD)
@@ -22,5 +24,40 @@ data$SEX  <- as.factor(data$SEX)
 data$Profession <- as.factor(data$Profession)
 
 data$CD <- as.factor(data$CD)
+
+
+## dplyr 
+# filter
+# arrange
+# select
+# rename 
+# mutate
+# groupe_by
+# summarize
+# left_join
+
+## data visualisation
+
+# data
+# mapping aes(x=,y=)
+# geom_: point/ bar/   histogram/ 
+# stats
+# scales
+# facets
+# coordination system
+# position ajustement
+# theme
+
+
+
+
+
+
+
+
+
+
+
+
 
 

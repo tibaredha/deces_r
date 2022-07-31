@@ -1,6 +1,14 @@
+#load data from shape file
 library(sf)
 w_algeria <- read_sf("../gadm41_DZA_shp/gadm41_DZA_1.shp",stringsAsFactors = TRUE)
 wc_algeria <- read_sf("../gadm41_DZA_shp/gadm41_DZA_2.shp")
+
+#preprocessing
+
+
+
+
+
 
 wilaya_x <- function(wilaya_n){
 

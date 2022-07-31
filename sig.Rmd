@@ -9,23 +9,41 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# load library
+# load data deces
 
-```{r load library, message=FALSE, warning=FALSE}
+```{r load data from mysql, message=FALSE, warning=FALSE}
 source("connection_db.R")
 ```
 
-```{r}
+## view data deces
+
+```{r view data}
 str(data)
 ```
+# load data sig 
 
-
-```{r}
+```{r load data sig, message=FALSE, warning=FALSE}
 source("sig.R")
 ```
 
+## view data sig
 
-# create w_algerie
+```{r view data sig}
+str(w_algeria)
+```
+
+```{r fig.height=3, fig.width=9, message=FALSE, warning=FALSE}
+
+w_algeria_m <- w_algeria %>% 
+  select(NAME_1,CC_1) %>% 
+  rename(wilaya=NAME_1,
+         idwilaya=CC_1) %>% 
+  mutate(idwilaya=as.numeric(idwilaya)*1000)
+```
+
+
+
+## create w_algerie
 
 ```{r fig.height=25, fig.width=25}
 plot(w_algeria["NAME_1"], axes = TRUE)
