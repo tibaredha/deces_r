@@ -202,14 +202,23 @@ ggplot(data = data, mapping = aes(x = SERVICEHOSPIT)) +
        y = "Total deces")
 ```
 
-## age 
+## age en année 
 
 ### age:table
 
+
+```{r}
+#clag <- c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100)
+clag <- c(0,10,20,30,40,50,60,70,80,90,100)
+data$age20cl <- cut(data$Years,clag)
+table(data$age20cl)
+```
+
+
 ```{r age table}
-age <- table(data$Years)#,useNA = "always"
-sort(age)
-summary(age)
+#age <- table(data$Years)#,useNA = "always"
+#sort(age)
+#summary(age)
 ```
 
 
@@ -439,7 +448,58 @@ ggplot(data = data,
 ## Croisement de deux variables quantitatives
 
 
+# Analyse multivariée
 
 
+```{r}
+library(corrplot)
+```
 
+
+```{r}
+str(data)
+```
+
+
+```{r}
+data_n <- data %>% 
+  select(WILAYAR,COMMUNER,DUREEHOSPIT,Years,Days,CODECIM0,CODECIM)  
+
+M = cor(data_n)
+corrplot(M, method = 'number') # colorful number
+```
+
+
+```{r}
+corrplot(M, method = 'color', order = 'alphabet')
+```
+```{r}
+corrplot(M) # by default, method = 'circle'
+```
+```{r}
+corrplot(M, order = 'AOE') # after 'AOE' reorder
+```
+```{r}
+corrplot(M, method = 'shade', order = 'AOE', diag = FALSE)
+```
+```{r}
+corrplot(M, method = 'square', order = 'FPC', type = 'lower', diag = FALSE)
+```
+```{r}
+corrplot(M, method = 'ellipse', order = 'AOE', type = 'upper')
+```
+
+```{r}
+corrplot.mixed(M, order = 'AOE')
+```
+```{r}
+corrplot.mixed(M, lower = 'shade', upper = 'pie', order = 'hclust')
+```
+```{r}
+corrplot(M, order = 'hclust', addrect = 2)
+```
+```{r}
+corrplot(M, method = 'square', diag = FALSE, order = 'hclust',
+         addrect = 3, rect.col = 'blue', rect.lwd = 3, tl.pos = 'd')
+```
 
