@@ -1,8 +1,17 @@
 ---
-title: "algeria_sig"
+title: "Mortalité Hospitaliere SIG"
+author: "Dr R.TIBA MISP | DSP Wilaya de Djelfa"
+date: "`r Sys.Date()`"
 output:
-  pdf_document: default
-  html_document: default
+  pdf_document:
+    toc: yes
+    number_sections: yes
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: yes
+      smooth_scroll: yes
+    number_sections: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -13,44 +22,41 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r load data from mysql, message=FALSE, warning=FALSE}
 source("connection_db.R")
+#str(data)
 ```
 
-## view data deces
 
-```{r view data}
-str(data)
-```
 # load data sig 
 
 ```{r load data sig, message=FALSE, warning=FALSE}
 source("sig.R")
 ```
 
-## view data sig
 
-```{r view data sig}
-str(w_algeria)
+# wilayas algerie
+
+
+```{r fig.height=8, fig.width=8, message=FALSE, warning=FALSE}
+#str(w_algeria)
+#st_crs(w_algeria)
+mtq_w <- st_centroid(w_algeria)
+plot(st_geometry(w_algeria))
+plot(st_geometry(mtq_w), add=TRUE, cex=0.8, col="red", pch=20)
 ```
 
-```{r fig.height=3, fig.width=9, message=FALSE, warning=FALSE}
+## wilayas algerie
 
-w_algeria_m <- w_algeria %>% 
-  select(NAME_1,CC_1) %>% 
-  rename(wilaya=NAME_1,
-         idwilaya=CC_1) %>% 
-  mutate(idwilaya=as.numeric(idwilaya)*1000)
+```{r fig.height=8, fig.width=8}
+ggplot()+
+  geom_sf(data = w_algeria,fill="lightgreen",color="black",size=0.25)+
+  theme_void()+
+  coord_sf(crs = "+proj=robin")
 ```
 
+## wilayas algerie
 
 
-## create w_algerie
-
-```{r fig.height=25, fig.width=25}
-plot(w_algeria["NAME_1"], axes = TRUE)
-title("the ten counties with smallest area")
-```
-
-```{r fig.height=20, fig.width=20}
+```{r fig.height=8, fig.width=8}
  st_geometry(w_algeria) %>% 
     plot()
  w_algeria %>% 
@@ -61,99 +67,76 @@ title("the ten counties with smallest area")
    title("the ten counties with smallest area")
 ```
 
+## wilayas algerie
 
 
-
-
-```{r fig.height=25, fig.width=25, message=FALSE, warning=FALSE}
-mtq_c <- st_centroid(w_algeria)
-plot(st_geometry(w_algeria))
-plot(st_geometry(mtq_c), add=TRUE, cex=2, col="red", pch=20)
+```{r fig.height=8, fig.width=8, message=FALSE, warning=FALSE}
+plot(w_algeria["NAME_1"], axes = TRUE)
 ```
 
+# wilaya de djelfa
 
 
-# crs
-
-```{r}
-#st_crs(w_algeria)
+```{r fig.height=8, fig.width=8, message=FALSE, warning=FALSE}
+#str(wc_algeria)
+#st_crs(wc_algeria)
+djelfa <- wc_algeria %>% filter(NAME_1=="Djelfa")
+mtq_d <- st_centroid(djelfa)
+plot(st_geometry(djelfa))
+plot(st_geometry(mtq_d), add=TRUE, cex=1, col="red", pch=20)
 ```
 
-# plot 
+## wilaya de djelfa
 
-```{r fig.height=25, fig.width=25}
+```{r fig.height=8, fig.width=8, message=FALSE, warning=FALSE}
 ggplot()+
-  geom_sf(data = w_algeria,fill="lightgreen",color="black",size=0.25)+
-  theme_void()+
-  coord_sf(crs = "+proj=robin")
-```
-```{r}
-#wilaya_x("Djelfa")
-```
-
-```{r}
-#st_crs(w_algeria)
-```
-
-
-```{r fig.height=25, fig.width=25}
-djelfa <- wc_algeria %>% 
-  filter(NAME_1=="Djelfa")#Djelfa Médéa
-
-ggplot()+
-  geom_sf(data = djelfa,fill="lightgreen",color="black",size=0.25)+  ##,aes(fill=CC_2)
+  geom_sf(data = djelfa,fill="lightgreen",color="black",size=0.25)+
   theme_void()+
   coord_sf(crs = "+proj=robin")
 ```
 
+## wilaya de djelfa
+
+```{r fig.height=8, fig.width=8}
+st_geometry(djelfa) %>% 
+    plot()
+ djelfa %>% 
+   select(NAME_2) %>% 
+   arrange(NAME_2) %>% 
+   slice(1:15) %>% 
+   plot(add = TRUE, col = 'lightgreen')
+   title("wilaya de djelfa")
+```
+
+## wilaya de djelfa
 
 
-```{r fig.height=25, fig.width=25, message=FALSE, warning=FALSE}
-ggplot(djelfa)+
-  geom_sf(color = "black", fill = "lightgreen")+
-  xlab("Longitude") + ylab("Latitude") +
-  ggtitle("Djelfa map")+
-  theme_void()+
-  coord_sf(crs = "+proj=robin")
-#ggsave("djelfa.pdf")
+```{r fig.height=8, fig.width=8}
+plot(djelfa["NAME_2"], axes = TRUE)
 ```
 
 
 
-
-
-```{r}
-#plot(st_geometry(djelfa))
-```
+## wilaya de djelfa
 
 ```{r message=FALSE, warning=FALSE, paged.print=TRUE}
 pop <- read.csv(file = "djelfa.csv")
-#head(pop)
-```
-
-
-```{r}
 pop_djelfa <- merge(x = djelfa, y = pop, by.x = "CC_2", by.y = "ID")
-#head(mtq)
 ```
 
+## wilaya de djelfa sup
 
-```{r fig.height=25, fig.width=25}
+```{r fig.height=8, fig.width=8}
+plot(pop_djelfa["sup"])
+```
+
+## wilaya de djelfa pop
+
+```{r fig.height=8, fig.width=8}
 plot(pop_djelfa["pop"])
 ```
 
-```{r fig.height=25, fig.width=25, message=FALSE, warning=FALSE}
-y <- pop_djelfa[,c("pop","NAME_2")]
-plot(y["pop"])
-#head(y)
-```
-
-
-
-```{r fig.height=25, fig.width=25}
-plot(w_algeria["NAME_1"])
-```
-
+# mortalité hospitaliere
 
 ```{r}
 library(ggthemes)
@@ -161,9 +144,9 @@ library(ggthemes)
 #library(ggrepel) ## For displaying labels on ggplot2 object
 ```
 
-# Décès par wilaya 
+## Décès par wilayas 
 
-## préprocessing data
+### préprocessing data
 
 ```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 data %>%
@@ -224,7 +207,7 @@ data %>%
                     ))-> df    
 ```
 
-## display carte
+### display map
 
 ```{r fig.height=8, fig.width=8}
 deces_w_djelfa <-left_join(w_algeria, df, by='CC_1')
@@ -243,9 +226,9 @@ ggplot()+
   coord_sf(crs = "+proj=robin")
 ```
 
-# Décès par communes wilaya de Djelfa
+## Décès par communes wilaya de Djelfa
 
-## préprocessing data
+### préprocessing data
 
 ```{r message=FALSE, warning=FALSE}
 data %>%
@@ -294,7 +277,7 @@ data %>%
                     ))-> dfc
 ```
 
-## display carte 
+### display map 
 
 ```{r fig.height=8, fig.width=8}
 deces_c_djelfa <-left_join(wc_algeria, dfc, by='CC_2')
