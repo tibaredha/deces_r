@@ -58,15 +58,34 @@ names(data)
 
 ## view data structure deces
 
+### str
+
 ```{r view dadat deces }
 str(data)
 ```
+### glimpse
+
+```{r}
+glimpse(data)
+```
+
+### skimr
+
+```{r message=FALSE, warning=FALSE}
+#library(skimr)
+#skim(data)
+```
+
+
 
 ## modalité des variable deces
 
 ```{r}
 unique(data$LD)
 unique(data$SEX)
+# Les facteurs prennent leurs valeurs dans un ensemble de modalités prédéfinies 
+# et ne peuvent enprendre d’autres
+levels(data$SEX)
 unique(data$Profession)
 unique(data$CD)
 ```
@@ -99,16 +118,23 @@ Si on souhaite afficher seulement les premières ou dernières valeurs d’une v
 
 Le deuxième argument numérique permet d’indiquer le nombre de valeurs à afficher.
 
+### head
+
 ```{r}
 head(data,6)
 ```
 
-## 
+### tail 
 
 ```{r}
 tail(data,6)
 ```
 
+### View
+
+```{r}
+View(data)
+```
 
 
 
@@ -210,7 +236,7 @@ ggplot(data = data, mapping = aes(x = SERVICEHOSPIT)) +
 ```{r}
 #clag <- c(0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100)
 clag <- c(0,10,20,30,40,50,60,70,80,90,100)
-data$age20cl <- cut(data$Years,clag)
+data$age20cl <- cut(data$Years,clag,include.lowest = TRUE)
 table(data$age20cl)
 ```
 

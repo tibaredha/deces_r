@@ -51,8 +51,6 @@ title("the ten counties with smallest area")
 ```
 
 ```{r fig.height=20, fig.width=20}
-#if (require(dplyr, quietly = TRUE)) {}
-
  st_geometry(w_algeria) %>% 
     plot()
  w_algeria %>% 
@@ -61,7 +59,6 @@ title("the ten counties with smallest area")
    slice(1:15) %>% 
    plot(add = TRUE, col = 'lightgreen')
    title("the ten counties with smallest area")
-
 ```
 
 
@@ -157,13 +154,18 @@ plot(y["pop"])
 plot(w_algeria["NAME_1"])
 ```
 
+
 ```{r}
-w_algeria
+library(ggthemes)
+#library(RColorBrewer) # ColorBrewer Palettes
+#library(ggrepel) ## For displaying labels on ggplot2 object
 ```
 
+# Décès par wilaya 
 
+## préprocessing data
 
-```{r}
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 data %>%
   select(DINS,WILAYAR) %>% 
   filter(DINS >= dt1 & DINS >= dt2 )  %>% 
@@ -222,49 +224,95 @@ data %>%
                     ))-> df    
 ```
 
+## display carte
 
-```{r}
-str(df) 
-```
+```{r fig.height=8, fig.width=8}
+deces_w_djelfa <-left_join(w_algeria, df, by='CC_1')
+wdjelfa <- deces_w_djelfa %>% 
+  select(NAME_1,CC_1,number_wil) %>% 
+  mutate(number_wil = log(number_wil))
 
-
-```{r}
-#head(df)
-```
-
-
-```{r}
-#deces_djelfa <- merge(x = w_algeria, y = dff, by.x = "CC_1", by.y = "CC_1")
-
-deces_djelfa <-left_join(w_algeria, df, by='CC_1')
-```
-
-
-```{r}
-#deces_djelfa
-```
-
-
-```{r fig.height=25, fig.width=25}
-plot(deces_djelfa["number_wil"])
-```
-
-
-```{r fig.height=25, fig.width=25}
 ggplot()+
-  geom_sf(data = deces_djelfa,size=0.25,aes(fill=number_wil))+  ##
-  theme_void()+
+  geom_sf(data=wdjelfa,aes(fill=number_wil), color = "white", lwd = 0.05) +
+    scale_fill_viridis_c(option = "magma", name = "Nbr décès (log)") +
+    theme_map() + 
+    theme(legend.direction="horizontal") +
+     labs(title = "Répartition des décès hospitalier par wilayas", 
+         subtitle = "Wilayas algerie année 2020", 
+         caption = "Source: Dr R.TIBA \n Praticien inspecteur santé publique \n DSP Wilaya de Djelfa")+
   coord_sf(crs = "+proj=robin")
 ```
 
+# Décès par communes wilaya de Djelfa
 
+## préprocessing data
 
+```{r message=FALSE, warning=FALSE}
+data %>%
+  select(DINS,WILAYAR,COMMUNER) %>% 
+  filter(DINS >= dt1 & DINS >= dt2 & WILAYAR == 17000)  %>% 
+  group_by(COMMUNER) %>%   
+  summarise(number_com = n()) %>% 
+  arrange(desc(number_com)) %>% 
+  mutate(CC_2=recode(COMMUNER,
+                    "916" = "1701",#djelfa
+                    "917" = "1714",#el idrissia
+                    "919" = "1703",#919	El Guedid
+                    "920" = "1726",#920	Charef
+                    "923" = "1727",#923	Beni Yacoub
+                    "924" = "1731",#924	Ain Oussera
+                    "925" = "1721",#925	Guernini
+                    "926" = "1719",#926	Sidi Ladjel
+                    "927" = "1733",#927	Hassi Fedoul
+                    "928" = "1711",#928	El Khemis
+                    "929" = "1708",#929	Birine
+                    "931" = "1732",#931	Benhar
+                    "932" = "1720",#932	Had-Sahary
+                    "933" = "1709",#933	Bouira Lahdab
+                    "934" = "1735",#934	Ain Fekka
+                    "935" = "1704",#935	Hassi Bahbah
+                    "939" = "1728",#939	Zaafrane
+                    "940" = "1716",#940	Hassi el Euch
+                    "941" = "1705",#941	Ain Maabed
+                    "942" = "1725",#942	Dar Chioukh
+                    "946" = "1713",#946	MLiliha
+                    "947" = "1712",#947	Sidi Baizid
+                    "948" = "1717",#948	Messad
+                    "951" = "1718",#951	Guettara
+                    "952" = "1729",#952	Deldoul
+                    "953" = "1706",#953	Sed Rahal
+                    "954" = "1722",#954	Selmana
+                    "956" = "1724",#956	Oum Laadham
+                    "957" = "1702",#957	Mouadjebar
+                    "958" = "1730",#958	Ain el Ibel
+                    "962" = "1710",#962	Zaccar
+                    "963" = "1715",#963	Douis
+                    "964" = "1723",#964	Ain Chouhada
+                    "965" = "1736",#965	Tadmit
+                    "967" = "1707",#967	Faidh el Botma
+                    "968" = "1734" #968	Amourah
+                    ))-> dfc
+```
 
+## display carte 
 
+```{r fig.height=8, fig.width=8}
+deces_c_djelfa <-left_join(wc_algeria, dfc, by='CC_2')
+cdjelfa <- deces_c_djelfa %>% 
+  filter(NAME_1=="Djelfa") %>% 
+  select(NAME_1,CC_2,number_com) %>% 
+  mutate(number_com = log(number_com))
 
-
-
-
+ggplot()+
+  geom_sf(data=cdjelfa,aes(fill=number_com), color = "white", lwd = 0.05) +
+    scale_fill_viridis_c(option = "magma", name = "Nbr Deces (log)") +
+    theme_map() + 
+    theme(legend.direction="horizontal") +
+     labs(title = "Répartition des décès hospitalier par communes", 
+         subtitle = "Communes Wilaya de djelfa année 2020", 
+         caption = "Source: Dr R.TIBA \n Praticien inspecteur santé publique \n DSP Wilaya de Djelfa")+
+  coord_sf(crs = "+proj=robin")
+```
 
 
 
