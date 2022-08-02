@@ -1,0 +1,98 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+djelfa <- read_sf("shp/djelfa.shp")
+
+djelfa %>% 
+  select(CC_2,NAME_1,NAME_2) %>% 
+  rename(IDC="CC_2",WILAYA="NAME_1",COMMUNE="NAME_2") %>% 
+  arrange(COMMUNE) %>%
+  select(IDC,COMMUNE)->djelfa     #%>% 
+  #st_geometry() %>% 
+  #plot()
+
+```
+
+
+```{r}
+pop <- read.csv(file = "djelfa.csv")
+pop_djelfa <- merge(x = djelfa, y = pop, by.x = "IDC", by.y = "ID")
+
+pop_djelfa %>% 
+  mutate(poplog = log(pop),suplog = log(sup)) -> pop_djelfa
+
+```
+
+```{r}
+plot(pop_djelfa["poplog"])
+```
+
+```{r}
+plot(pop_djelfa["suplog"])
+```
+```{r message=FALSE, warning=FALSE}
+library(ggplot2)
+ggplot() + 
+  geom_sf(data = pop_djelfa, 
+          aes(fill = as.factor(suplog)),
+          color = "#401D16", size = 0.25) +
+  scale_fill_viridis_d(option = "plasma") +
+  guides(fill = FALSE) +
+  theme_void()
+```
+```{r fig.height=8, fig.width=8}
+ga_cities <- tribble(
+  ~city, ~lat, ~long,
+  "ain-oussera", 35.4554294869433, 2.9050393689471274,
+  "birine", 35.63450122039767, 3.2236170357084952,
+  "benahar", 35.486528035470606, 3.0098342604662056,
+  "hadsahari",35.35229272812239, 3.3660584416886588,
+  "hassi bahbah",35.086917214907054, 3.0241281169692034,
+  "djelfa",34.663257386688, 3.265356605695543,
+  "messaad",34.156638714200504, 3.4852112316488912
+)
+#ga_cities
+
+ga_cities_geometry <- ga_cities %>% 
+  st_as_sf(coords = c("long", "lat"), crs = 4326)
+#ga_cities_geometry
+
+#
+
+
+
+```
+
+
+
+
+```{r fig.height=8, fig.width=8, message=FALSE, warning=FALSE}
+ggplot() +
+  geom_sf(data = pop_djelfa, fill = "#EC8E55") +
+  geom_sf(data = ga_cities_geometry, size = 2) +
+  #geom_sf_label(data = ga_cities_geometry, aes(label = city),nudge_y = 0.1) +
+  theme_void()+
+  coord_sf(crs = "+proj=robin")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

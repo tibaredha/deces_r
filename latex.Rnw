@@ -1,0 +1,20 @@
+\documentclass{article}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+
+\section*{tibaredha}
+nb! go to / tools / global option /sweave /activate  tinytex
+
+
+<<>>=
+1+1
+@
+
+
+\section*{amranemimi}
+qsdqsdqsdqsd
+
+
+\end{document}
