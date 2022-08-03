@@ -1,0 +1,83 @@
+---
+title: "mapsf"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, warning=FALSE}
+#https://riatelab.github.io/mapsf/articles/mapsf.html#examples-of-thematic-maps
+library(sf)
+library(mapsf)# mapsf uses sf objects to produce base graphics
+```
+
+```{r}
+djelfa <- read_sf("../shp/djelfa.shp")
+```
+
+
+```{r fig.height=6, fig.width=6, message=FALSE, warning=FALSE}
+mf_theme("candy")                                        # select a theme                                  
+mf_shadow(djelfa)                                        # display the shadow of a polygon layer
+mf_map(djelfa,type="choro",var="POP",add = TRUE)         # display polygons
+mf_arrow()                                               # display north arrow
+mf_scale(size = 5)                                       # display scale bar
+mf_credits(txt = "R. TIBA, 2022 - mapsf 0.1.1 \n ")      # display credits
+mf_title("Wilaya de djelfa")                             # display title
+mf_annotation(djelfa[5, ],txt = "Commune \n ain-oussera")# display an annotation
+```
+
+
+```{r}
+# import the sample data set
+mtq <- djelfa
+# Initiate a base map
+mf_init(x = mtq, theme = "green")
+# Plot a shadow
+mf_shadow(mtq, add = TRUE)
+# plot municipalities 
+mf_map(mtq, add = TRUE)
+# plot population
+mf_map(
+  x = mtq, 
+  var = "POP",
+  type = "prop",
+  inches = 0.25, 
+  col = "brown4",
+  leg_pos = "bottomleft2",  
+  leg_title = "Total population"
+)
+# layout
+mf_layout(title = "Population Distribution in Djelfa Algeria", 
+          credits = paste0("Sources: R. TIBA,DSP Djelfa, 2022\n","mapsf ", packageVersion("mapsf")))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

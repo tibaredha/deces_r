@@ -1,9 +1,9 @@
 ---
 title: "Mortalité  Hospitaliere"
 output:
+  pdf_document: default
   html_document:
     number_sections: yes
-  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -35,6 +35,7 @@ Pour résumer, comme nous avons désormais décidé de saisir nos commandes dans
 
 ```{r load dada deces,message=FALSE, warning=FALSE}
 source("connection_db.R")
+source("sig.R")
 ```
 
 ## inspect data deces 
@@ -155,6 +156,158 @@ Si on souhaite analyser ces variables, les méthodes et fonctions utilisées ser
 
 ## lieux du deces 
 
+### SIG Deces par wilaya de Résidence
+
+```{r}
+data %>%
+  select(DINS,WILAYAR) %>% 
+  filter(DINS >= dt1 & DINS >= dt2 )  %>% 
+  group_by(WILAYAR) %>%   
+  summarise(number_wil = n()) %>% 
+  arrange(desc(number_wil)) %>% 
+  mutate(CC_1=recode(WILAYAR,
+                    "1000" = "1",
+                    "2000" = "2",
+                    "3000" = "3",
+                    "4000" = "4",
+                    "5000" = "5",
+                    "6000" = "6",
+                    "7000" = "7",
+                    "8000" = "8",
+                    "9000" = "9",
+                    "10000" = "10",
+                    "11000" = "11",
+                    "12000" = "12",
+                    "13000" = "13",
+                    "14000" = "14",
+                    "15000" = "15",
+                    "16000" = "16",
+                    "17000" = "17",
+                    "18000" = "18",
+                    "19000" = "19",
+                    "20000" = "20",
+                    "21000" = "21",
+                    "22000" = "22",
+                    "23000" = "23",
+                    "24000" = "24",
+                    "25000" = "25",
+                    "26000" = "26",
+                    "27000" = "27",
+                    "28000" = "28",
+                    "29000" = "29",
+                    "30000" = "30",
+                    "31000" = "31",
+                    "32000" = "32",
+                    "33000" = "33",
+                    "34000" = "34",
+                    "35000" = "35",
+                    "36000" = "36",
+                    "37000" = "37",
+                    "38000" = "38",
+                    "39000" = "39",
+                    "40000" = "40",
+                    "41000" = "41",
+                    "42000" = "42",
+                    "43000" = "43",
+                    "44000" = "44",
+                    "45000" = "45",
+                    "46000" = "46",
+                    "47000" = "47",
+                    "48000" = "48"
+                    ))-> df    
+```
+
+### SIG Deces par wilaya de Résidence:map
+
+```{r fig.height=8, fig.width=8}
+deces_w_djelfa <-left_join(w_algeria, df, by='CC_1')
+wdjelfa <- deces_w_djelfa %>% 
+  select(NAME_1,CC_1,number_wil) %>% 
+  mutate(number_wil = log(number_wil))
+
+ggplot()+
+  geom_sf(data=wdjelfa,aes(fill=number_wil), color = "white", lwd = 0.05) +
+    scale_fill_viridis_c(option = "magma", name = "Nbr décès (log)") +
+    theme_map() + 
+    theme(legend.direction="horizontal") +
+     labs(title = "Répartition des décès hospitalier par wilayas", 
+         subtitle = "Wilayas algerie année 2020", 
+         caption = "Source: Dr R.TIBA \n Praticien inspecteur santé publique \n DSP Wilaya de Djelfa")+
+  coord_sf(crs = "+proj=robin")
+```
+
+### SIG Deces par commune de Résidence
+
+```{r}
+data %>%
+  select(DINS,WILAYAR,COMMUNER) %>% 
+  filter(DINS >= dt1 & DINS >= dt2 & WILAYAR == 17000)  %>% 
+  group_by(COMMUNER) %>%   
+  summarise(number_com = n()) %>% 
+  arrange(desc(number_com)) %>% 
+  mutate(CC_2=recode(COMMUNER,
+                    "916" = "1701",#djelfa
+                    "917" = "1714",#el idrissia
+                    "919" = "1703",#919	El Guedid
+                    "920" = "1726",#920	Charef
+                    "923" = "1727",#923	Beni Yacoub
+                    "924" = "1731",#924	Ain Oussera
+                    "925" = "1721",#925	Guernini
+                    "926" = "1719",#926	Sidi Ladjel
+                    "927" = "1733",#927	Hassi Fedoul
+                    "928" = "1711",#928	El Khemis
+                    "929" = "1708",#929	Birine
+                    "931" = "1732",#931	Benhar
+                    "932" = "1720",#932	Had-Sahary
+                    "933" = "1709",#933	Bouira Lahdab
+                    "934" = "1735",#934	Ain Fekka
+                    "935" = "1704",#935	Hassi Bahbah
+                    "939" = "1728",#939	Zaafrane
+                    "940" = "1716",#940	Hassi el Euch
+                    "941" = "1705",#941	Ain Maabed
+                    "942" = "1725",#942	Dar Chioukh
+                    "946" = "1713",#946	MLiliha
+                    "947" = "1712",#947	Sidi Baizid
+                    "948" = "1717",#948	Messad
+                    "951" = "1718",#951	Guettara
+                    "952" = "1729",#952	Deldoul
+                    "953" = "1706",#953	Sed Rahal
+                    "954" = "1722",#954	Selmana
+                    "956" = "1724",#956	Oum Laadham
+                    "957" = "1702",#957	Mouadjebar
+                    "958" = "1730",#958	Ain el Ibel
+                    "962" = "1710",#962	Zaccar
+                    "963" = "1715",#963	Douis
+                    "964" = "1723",#964	Ain Chouhada
+                    "965" = "1736",#965	Tadmit
+                    "967" = "1707",#967	Faidh el Botma
+                    "968" = "1734" #968	Amourah
+                    ))-> dfc
+```
+
+
+
+```{r fig.height=8, fig.width=8, message=FALSE, warning=FALSE}
+deces_c_djelfa <-left_join(wc_algeria, dfc, by='CC_2')
+#x = djelfa, y = dataext, by.x = "IDC", by.y = "IDC"
+
+
+cdjelfa <- deces_c_djelfa %>% 
+  filter(NAME_1=="Djelfa") %>% 
+  select(NAME_1,CC_2,number_com) %>% 
+  mutate(number_com = log(number_com))
+
+ggplot()+
+  geom_sf(data=cdjelfa,aes(fill=number_com), color = "white", lwd = 0.05) +
+    scale_fill_viridis_c(option = "magma", name = "Nbr Deces (log)") +
+    theme_map() + 
+    theme(legend.direction="horizontal") +
+     labs(title = "Répartition des décès hospitalier par communes", 
+         subtitle = "Communes Wilaya de djelfa année 2020", 
+         caption = "Source: Dr R.TIBA \n Praticien inspecteur santé publique \n DSP Wilaya de Djelfa")+
+  coord_sf(crs = "+proj=robin")
+```
+
 ### lieux:table
 
 ```{r lieux}
@@ -177,6 +330,7 @@ ggplot(data = data, mapping = aes(x = LD)) +
        x = "Lieux", 
        y = "Total deces")
 ```
+
 
 ## structure sanitaire
 

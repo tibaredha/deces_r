@@ -120,20 +120,20 @@ plot(djelfa["NAME_2"], axes = TRUE)
 ## wilaya de djelfa
 
 ```{r message=FALSE, warning=FALSE, paged.print=TRUE}
-pop <- read.csv(file = "djelfa.csv")
-pop_djelfa <- merge(x = djelfa, y = pop, by.x = "CC_2", by.y = "ID")
+pop <- read.csv(file = "./data/djelfa.csv")
+pop_djelfa <- merge(x = djelfa, y = pop, by.x = "CC_2", by.y = "IDC")
 ```
 
 ## wilaya de djelfa sup
 
 ```{r fig.height=8, fig.width=8}
-plot(pop_djelfa["sup"])
+plot(pop_djelfa["SUP"])
 ```
 
 ## wilaya de djelfa pop
 
 ```{r fig.height=8, fig.width=8}
-plot(pop_djelfa["pop"])
+plot(pop_djelfa["POP"])
 ```
 
 # mortalité hospitaliere
