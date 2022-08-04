@@ -135,7 +135,7 @@ tail(data,6)
 ### View
 
 ```{r}
-View(data)
+#View(data)
 ```
 
 
@@ -155,6 +155,28 @@ Si on souhaite analyser ces variables, les méthodes et fonctions utilisées ser
 - d’une variable qualitative  (variable pouvant prendre un nombre limité de valeurs appelées modalités).
 
 
+## Temps  
+
+```{r}
+ts <- data %>%
+      select(DINS) %>% 
+      filter(DINS >= dt1 & DINS <= dt2 )  %>% 
+      group_by(DINS) %>%   
+      summarise(number_year = n()) %>% 
+      arrange(DINS) #%>% 
+
+ts %>%   
+ggplot(aes(x = DINS, y = number_year, fill = DINS)) +
+    #geom_line(color="red") +
+    geom_bar(stat = "identity") +
+    theme_classic() +
+    labs(
+        x = "Temps en jours ",
+        y = "Nombre de décès par jours",
+        title = paste("Nombre de décès par jours (Wilaya de Djelfa) du ",dt1," au ",dt2)
+        )
+```
+
 ## lieux du deces 
 
 ### SIG Deces par wilaya de Résidence
@@ -162,7 +184,7 @@ Si on souhaite analyser ces variables, les méthodes et fonctions utilisées ser
 ```{r}
 data %>%
   select(DINS,WILAYAR) %>% 
-  filter(DINS >= dt1 & DINS >= dt2 )  %>% 
+  filter(DINS >= dt1 & DINS <= dt2 )  %>% 
   group_by(WILAYAR) %>%   
   summarise(number_wil = n()) %>% 
   arrange(desc(number_wil)) %>% 
@@ -232,17 +254,17 @@ ggplot()+
     theme_map() + 
     theme(legend.direction="horizontal") +
      labs(title = "Répartition des décès hospitalier par wilayas", 
-         subtitle = "Wilayas algerie année 2020", 
+         subtitle = paste("Wilayas algerie du ",dt1," au ",dt2), 
          caption = "Source: Dr R.TIBA \n Praticien inspecteur santé publique \n DSP Wilaya de Djelfa")+
   coord_sf(crs = "+proj=robin")
 ```
 
 ### SIG Deces par commune de Résidence
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 data %>%
   select(DINS,WILAYAR,COMMUNER) %>% 
-  filter(DINS >= dt1 & DINS >= dt2 & WILAYAR == 17000)  %>% 
+  filter(DINS >= dt1 & DINS <= dt2 & WILAYAR == 17000)  %>% 
   group_by(COMMUNER) %>%   
   summarise(number_com = n()) %>% 
   arrange(desc(number_com)) %>% 
@@ -304,7 +326,7 @@ ggplot()+
     theme_map() + 
     theme(legend.direction="horizontal") +
      labs(title = "Répartition des décès hospitalier par communes", 
-         subtitle = "Communes Wilaya de djelfa année 2020", 
+         subtitle = paste("Communes Wilaya de djelfa du ",dt1," au ",dt2), 
          caption = "Source: Dr R.TIBA \n Praticien inspecteur santé publique \n DSP Wilaya de Djelfa")+
   coord_sf(crs = "+proj=robin")
 ```
@@ -564,6 +586,8 @@ ggplot(data = data) +
 ```{r}
 table(data$Profession, data$SEX)
 ```
+
+
 ```{r}
 ggplot(data = data) +
   geom_bar(aes(x = Profession, fill = SEX))+
@@ -623,13 +647,10 @@ ggplot(data = data,
 ```
 
 
-
-
-
 ## Croisement de deux variables quantitatives
 
 
-# Analyse multivariée
+
 
 
 ```{r}
@@ -638,7 +659,7 @@ library(corrplot)
 
 
 ```{r}
-str(data)
+#str(data)
 ```
 
 
@@ -654,18 +675,23 @@ corrplot(M, method = 'number') # colorful number
 ```{r}
 corrplot(M, method = 'color', order = 'alphabet')
 ```
+
 ```{r}
 corrplot(M) # by default, method = 'circle'
 ```
+
 ```{r}
 corrplot(M, order = 'AOE') # after 'AOE' reorder
 ```
+
 ```{r}
 corrplot(M, method = 'shade', order = 'AOE', diag = FALSE)
 ```
+
 ```{r}
 corrplot(M, method = 'square', order = 'FPC', type = 'lower', diag = FALSE)
 ```
+
 ```{r}
 corrplot(M, method = 'ellipse', order = 'AOE', type = 'upper')
 ```
@@ -673,14 +699,19 @@ corrplot(M, method = 'ellipse', order = 'AOE', type = 'upper')
 ```{r}
 corrplot.mixed(M, order = 'AOE')
 ```
+
 ```{r}
 corrplot.mixed(M, lower = 'shade', upper = 'pie', order = 'hclust')
 ```
+
 ```{r}
 corrplot(M, order = 'hclust', addrect = 2)
 ```
+
 ```{r}
 corrplot(M, method = 'square', diag = FALSE, order = 'hclust',
          addrect = 3, rect.col = 'blue', rect.lwd = 3, tl.pos = 'd')
 ```
 
+
+# Analyse multivariée

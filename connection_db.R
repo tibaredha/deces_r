@@ -35,7 +35,7 @@ library(tidyverse)
 
 
 dt1 <- "2020-01-01"
-dt2 <- "2020-12-31"
+dt2 <- "2021-12-31"
 
 # 4-preprocessing ----
 data$DINS  <- as.Date(data$DINS)

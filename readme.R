@@ -27,6 +27,23 @@ delays <- wc_algeria %>%
     #dist = mean(distance, na.rm = TRUE),
     #delay = mean(arr_delay, na.rm = TRUE)
   ) %>%
-  filter(count > 1)
+  filter(count > 1) %>% 
+  arrange(count)
 plot(delays["count"])
+
+
+ggplot(data = delays) +
+  geom_bar(mapping = aes(x = count))
+
+
+ggplot(data = delays) +
+  geom_histogram(mapping = aes(x = count), binwidth = 5)
+
+
+
+
+
+
+
+
 
