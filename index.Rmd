@@ -538,6 +538,23 @@ ggplot(data = data, mapping = aes(x = Profession)) +
        y = "Total deces")
 ```
 
+## repartition des deces par chapitre CIM10 
+
+
+```{r chapitre cim10}
+table(data$CODECIM0)
+```
+
+## repartition des deces par titre CIM10 
+
+
+```{r titre cim10}
+#table(data$CODECIM)
+```
+
+
+
+
 # Analyse bivariée
 
 Faire une analyse bivariée, c’est étudier la relation entre deux variables : sont-elles liées ? les valeurs de l’une influencent-elles les valeurs de l’autre ? ou sont-elles au contraire indépendantes ?
@@ -623,10 +640,25 @@ table(data$SERVICEHOSPIT, data$SEX)
 ```{r}
 ggplot(data = data) +
   geom_bar(aes(x = SERVICEHOSPIT, fill = SEX))+
-  labs(title = "Répartition des décès par cause du deces et sexe",
+  labs(title = "Répartition des décès par service du deces et sexe",
        x = "structures sanitaires", 
        y = "age en année") #+theme_bw()
 ```
+
+## repartition des deces par CIM10 et sexe
+
+```{r chapitre par sexe}
+table(data$CODECIM0, data$SEX)
+```
+
+
+```{r titre par sexe}
+#table(data$CODECIM, data$SEX)
+```
+
+
+
+
 
 ## Croisement d’une variable quantitative et d’une variable qualitative
 
