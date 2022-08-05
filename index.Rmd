@@ -57,6 +57,8 @@ nrow(data)
 ncol(data)
 dim(data)
 names(data)
+#sum(is.na(data))
+#colMeans(is.na(data))
 ```
 
 ## view data structure deces
@@ -64,7 +66,7 @@ names(data)
 ### str
 
 ```{r view dadat deces }
-str(data)
+#str(data)
 ```
 ### glimpse
 
@@ -78,8 +80,6 @@ glimpse(data)
 #library(skimr)
 #skim(data)
 ```
-
-
 
 ## modalité des variable deces
 
@@ -108,6 +108,17 @@ La fonction table$colonne renvoie donc la colonne nommée colonne du tableau tab
 ## data$DINS
 ```
 
+
+## look_for
+
+```{r}
+#look_for(data)
+```
+
+## tbl_summary
+```{r message=FALSE, warning=FALSE}
+tbl_summary(data)
+```
 
 ## summary data deces
 
@@ -161,7 +172,6 @@ Si on souhaite analyser ces variables, les méthodes et fonctions utilisées ser
 ```{r}
 ts <- data %>%
       select(DINS) %>% 
-      filter(DINS >= dt1 & DINS <= dt2 )  %>% 
       group_by(DINS) %>%   
       summarise(number_year = n()) %>% 
       arrange(DINS) #%>% 
@@ -185,7 +195,6 @@ ggplot(aes(x = DINS, y = number_year, fill = DINS)) +
 ```{r}
 data %>%
   select(DINS,WILAYAR) %>% 
-  filter(DINS >= dt1 & DINS <= dt2 )  %>% 
   group_by(WILAYAR) %>%   
   summarise(number_wil = n()) %>% 
   arrange(desc(number_wil)) %>% 
@@ -265,7 +274,7 @@ ggplot()+
 ```{r message=FALSE, warning=FALSE}
 data %>%
   select(DINS,WILAYAR,COMMUNER) %>% 
-  filter(DINS >= dt1 & DINS <= dt2 & WILAYAR == 17000)  %>% 
+  filter(WILAYAR == 17000)  %>% 
   group_by(COMMUNER) %>%   
   summarise(number_com = n()) %>% 
   arrange(desc(number_com)) %>% 
@@ -314,8 +323,6 @@ data %>%
 ```{r fig.height=8, fig.width=8, message=FALSE, warning=FALSE}
 deces_c_djelfa <-left_join(wc_algeria, dfc, by='CC_2')
 #x = djelfa, y = dataext, by.x = "IDC", by.y = "IDC"
-
-
 cdjelfa <- deces_c_djelfa %>% 
   filter(NAME_1=="Djelfa") %>% 
   select(NAME_1,CC_2,number_com) %>% 
