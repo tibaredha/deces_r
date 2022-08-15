@@ -1,16 +1,36 @@
 ---
 title: "Mortalité  Hospitaliere"
-output:
-  pdf_document: default
+date: "`r format(Sys.time(), '%d %m, %Y')`"
+author:
+  - name: "Redha TIBA"
+    url: https://github.com/jjallaire
+    affiliation: RStudio
+    affiliation_url: https://www.rstudio.com
+output: 
   html_document: 
     number_sections: yes
     toc: yes
+  pdf_document: default
   word_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)#Run Python code and interact with Python
 ```
+
+```{python}
+#!pip freeze
+
+#!pip install numpy
+
+#import pandas
+
+#exit
+```
+
+
+\newpage
 
 # load dada deces 
 

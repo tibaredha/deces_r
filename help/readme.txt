@@ -13,7 +13,44 @@ adm3_pop_2009 %>%
     ) %>% 
   # Tri: décroissant
   arrange(desc(population))
+
+
+
+Hide source code     :```{r, echo=FALSE}
+Hide text output     :```{r, results='hide'}
+Hide messages        :```{r, message=FALSE}
+Hide warning messages:```{r, warning=FALSE}
+Hide plots           :```{r, fig.show='hide'}
+Hide everything      :```{r, include=FALSE}
+Remove hashes        :```{r, comment=""}
+Child documents      :```{r, child=c('one.Rmd', 'two.Rmd')}
+
+
+Note that the plot will be generated in the above chunk. It is
+just not displayed in the output.
  
+\newpage
+---
+title: "An analysis of `r nrow(mtcars)` cars"
+---
+
+output:
+  html_document:
+    number_sections: true
+  pdf_document:
+    number_sections: true
+bibliography: references.bib 
+@Manual{R-base,
+  title = {R: A Language and Environment for Statistical
+           Computing},
+  author = {{R Core Team}},
+  organization = {R Foundation for Statistical Computing},
+  address = {Vienna, Austria},
+  year = {2019},
+  url = {https://www.R-project.org},
+}
+	
+# This section is unnumbered {-}	
 
  
 ################################## 

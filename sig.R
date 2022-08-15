@@ -1,4 +1,5 @@
 #load data from shape file ----
+#data from https://gadm.org/
 library(sf)
 library(ggthemes)
 w_algeria <- read_sf("shp/gadm41_DZA_1.shp",stringsAsFactors = TRUE)
